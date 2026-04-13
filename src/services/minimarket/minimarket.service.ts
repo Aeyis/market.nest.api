@@ -3,6 +3,9 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {ProductEntity} from "../../entities/product.entity";
 import {Repository} from "typeorm";
 import {CategoryEntity} from "../../entities/category.entity";
+import {ProductDto, ProductListingDto} from "../../dto/product.dto";
+import {CreateProductDto, UpdateProductDto} from "../../dto/product.form.dto";
+import {CreateCategoryDto, UpdateCategoryDto} from "../../dto/category.form.dto";
 
 @Injectable()
 export class MinimarketService {
@@ -15,23 +18,29 @@ export class MinimarketService {
         private readonly _categoryRepository: Repository<CategoryEntity>,
     ) {}
 
-    async getProducts (): Promise<ProductEntity[]> {
-        return this._productRepository.find();
+    async getProducts (): Promise<ProductListingDto[]> {
+        const products = await this._productRepository.find();
+        return products.map(p => new ProductListingDto(p));
     }
 
-    async getProductById (id: number): Promise<ProductEntity | null> {
-        return this._productRepository.findOne({where : { id }});
+    async getProductById (id: number): Promise<ProductDto | null> {
+        const product = await this._productRepository.findOne({where : { id }});
+        return product ? new ProductDto(product) : null;
     }
 
-    async createProduct ( product: ProductEntity): Promise<ProductEntity> {
-        return this._productRepository.save(product)
+    async createProduct (dto: CreateProductDto): Promise<ProductDto> {
+        const product = this._productRepository.create(dto);
+        const saved = await this._productRepository.save(product);
+        return new ProductDto(saved);
     }
 
-    async updateProduct (id: number, product: ProductEntity): Promise<ProductEntity> {
-        return this._productRepository.save({ ...product, id })
+    async updateProduct (id: number, dto: UpdateProductDto): Promise<ProductDto> {
+        const saved = await this._productRepository.save({ ...dto, id });
+        return new ProductDto(saved);
     }
+
     async deleteProduct (id: number): Promise<void> {
-        await this._productRepository.delete(id)
+        await this._productRepository.delete(id);
     }
 
     async getCategories (): Promise<CategoryEntity[]> {
@@ -42,12 +51,13 @@ export class MinimarketService {
         return this._categoryRepository.findOne({ where: { id } });
     }
 
-    async createCategory (category: CategoryEntity): Promise<CategoryEntity> {
+    async createCategory (dto: CreateCategoryDto): Promise<CategoryEntity> {
+        const category = this._categoryRepository.create(dto);
         return this._categoryRepository.save(category);
     }
 
-    async updateCategory (id: number, category: CategoryEntity): Promise<CategoryEntity> {
-        return this._categoryRepository.save({ ...category, id });
+    async updateCategory (id: number, dto: UpdateCategoryDto): Promise<CategoryEntity> {
+        return this._categoryRepository.save({ ...dto, id });
     }
 
     async deleteCategory (id: number): Promise<void> {

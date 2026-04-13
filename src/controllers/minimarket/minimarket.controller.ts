@@ -1,6 +1,8 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {MinimarketService} from "../../services/minimarket/minimarket.service";
-import {ProductEntity} from "../../entities/product.entity";
+import {ProductDto, ProductListingDto} from "../../dto/product.dto";
+import {CreateProductDto, UpdateProductDto} from "../../dto/product.form.dto";
+import {CreateCategoryDto, UpdateCategoryDto} from "../../dto/category.form.dto";
 import {CategoryEntity} from "../../entities/category.entity";
 
 @Controller('minimarket')
@@ -8,22 +10,22 @@ export class MinimarketController {
     constructor(private readonly minimarketService: MinimarketService) {}
 
     @Get('products')
-    async getProducts(): Promise<ProductEntity[]> {
+    async getProducts(): Promise<ProductListingDto[]> {
         return await this.minimarketService.getProducts();
     }
 
     @Get('products/:id')
-    async getProduct(@Param('id') id: string): Promise<ProductEntity | null>{
+    async getProduct(@Param('id') id: string): Promise<ProductDto | null> {
         return await this.minimarketService.getProductById(+id);
     }
 
     @Post('products')
-    async createProduct(@Body() body: ProductEntity): Promise<ProductEntity> {
+    async createProduct(@Body() body: CreateProductDto): Promise<ProductDto> {
         return await this.minimarketService.createProduct(body);
     }
 
     @Patch('products/:id')
-    async updateProduct (@Param('id') id: string, @Body() body: ProductEntity): Promise<ProductEntity> {
+    async updateProduct(@Param('id') id: string, @Body() body: UpdateProductDto): Promise<ProductDto> {
         return await this.minimarketService.updateProduct(+id, body);
     }
 
@@ -43,12 +45,12 @@ export class MinimarketController {
     }
 
     @Post('categories')
-    async createCategory(@Body() body: CategoryEntity): Promise<CategoryEntity> {
+    async createCategory(@Body() body: CreateCategoryDto): Promise<CategoryEntity> {
         return await this.minimarketService.createCategory(body);
     }
 
     @Patch('categories/:id')
-    async updateCategory(@Param('id') id: string, @Body() body: CategoryEntity): Promise<CategoryEntity> {
+    async updateCategory(@Param('id') id: string, @Body() body: UpdateCategoryDto): Promise<CategoryEntity> {
         return await this.minimarketService.updateCategory(+id, body);
     }
 
@@ -57,5 +59,3 @@ export class MinimarketController {
         await this.minimarketService.deleteCategory(+id);
     }
 }
-
-
