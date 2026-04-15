@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MinimarketController } from './controllers/minimarket/minimarket.controller';
+import { ProductController } from './controllers/product/product.controller';
 import { MinimarketService } from './services/minimarket/minimarket.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ProductEntity} from "./entities/product.entity";
 import {CategoryEntity} from "./entities/category.entity";
+import { CategoryController } from './controllers/category/category.controller';
+import { ProductService } from './services/product/product.service';
 
 
 @Module({
@@ -23,7 +25,7 @@ import {CategoryEntity} from "./entities/category.entity";
     }),
       TypeOrmModule.forFeature([ProductEntity, CategoryEntity]),
   ],
-  controllers: [AppController, MinimarketController],
-  providers: [AppService, MinimarketService],
+  controllers: [AppController, ProductController, CategoryController],
+  providers: [AppService, MinimarketService, ProductService],
 })
 export class AppModule {}

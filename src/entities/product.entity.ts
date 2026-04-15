@@ -1,7 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-import {CategoryEntity} from "./category.entity";
+import {
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CategoryEntity } from './category.entity';
 
-@Entity ({ name: 'products' })
+@Entity({ name: 'product' })
 export class ProductEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -9,12 +15,14 @@ export class ProductEntity {
     @Column()
     name: string;
 
-    @Column({nullable:true})
+    @Column({ type: 'text', nullable: true })
     description?: string;
 
-    @Column({ type: "numeric", precision: 9, scale: 2 })//precision c'est le nombre de chiffres et scale c'est le nombre apres la virgule
+    @Column({ type: 'numeric', precision: 9, scale: 2 })
     price: number;
-    @ManyToMany(()=> CategoryEntity, category=>category.products)
-    @JoinTable({name:'product_category'})
+
+    // category Many to Many
+    @ManyToMany(() => CategoryEntity, (c) => c.products)
+    @JoinTable({ name: 'product_category' })
     categories: CategoryEntity[];
 }

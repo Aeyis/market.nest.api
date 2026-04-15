@@ -20,11 +20,11 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   @MinLength(2)
-  name?: string;
+  name: string;
 
   @IsOptional()
   @IsNumber()
-  price?: number;
+  price: number;
 
   @IsOptional()
   @IsString()
@@ -35,5 +35,18 @@ export class ProductQueryDto {
   @IsOptional()
   @IsString()
   sort? : 'name' | 'price';
+}
 
+export class ProductListingQueryDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsNumber()
+  offset?: number;
+
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
 }
