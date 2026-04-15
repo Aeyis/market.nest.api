@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {MinimarketService} from "../../services/minimarket/minimarket.service";
 import {ProductDto, ProductListingDto} from "../../dto/product.dto";
-import {CreateProductDto, UpdateProductDto} from "../../dto/product.form.dto";
+import {CreateProductDto, ProductQueryDto, UpdateProductDto} from "../../dto/product.form.dto";
 import {CreateCategoryDto, UpdateCategoryDto} from "../../dto/category.form.dto";
 import {CategoryEntity} from "../../entities/category.entity";
 

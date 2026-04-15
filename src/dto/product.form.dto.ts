@@ -27,3 +27,10 @@ export class UpdateProductDto {
   @IsString()
   description?: string;
 }
+
+export class ProductQueryDto {
+  @IsOptional()
+  @IsString()
+  sort? : 'name' | 'price';
+
+}
