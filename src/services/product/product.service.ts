@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from '../../entities/category.entity';
 import { ProductEntity } from '../../entities/product.entity';
-import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import {FindOptionsWhere, ILike, In, Repository} from 'typeorm';
 import { ProductListingQueryDto } from '../../dto/product.form.dto';
+import {ProductDto} from "../../dto/product.dto";
 
 @Injectable()
 export class ProductService {
@@ -14,16 +15,31 @@ export class ProductService {
         private readonly _categoryRepo: Repository<CategoryEntity>,
     ) {}
 
+    async getById(id: number): Promise<ProductEntity> {
+        const product = await this._productRepo.findOne({
+            where: {
+                id: id,
+            },
+            relations : {
+                categories: true,
+            },
+        });
+        if (!product) {
+            throw new Error('Produit not found');
+        }
+        return product
+    }
+
     async getAll(query: ProductListingQueryDto): Promise<{ data: ProductEntity[]; total: number }> {
         const where: FindOptionsWhere<ProductEntity> = {};
 
         if (query.name) {
-            where.name = Like(`%${query.name}%`);
+            where.name = ILike(`%${query.name}%`);
         }
 
         const result = await this._productRepo.findAndCount({
             where,
-            relations: ['categories'],
+            relations: {categories: true,},
             skip: query.offset,
             take: query.limit,
         });

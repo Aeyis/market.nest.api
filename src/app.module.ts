@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductController } from './controllers/product/product.controller';
-import { MinimarketService } from './services/minimarket/minimarket.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ProductEntity} from "./entities/product.entity";
 import {CategoryEntity} from "./entities/category.entity";
@@ -26,6 +25,6 @@ import { ProductService } from './services/product/product.service';
       TypeOrmModule.forFeature([ProductEntity, CategoryEntity]),
   ],
   controllers: [AppController, ProductController, CategoryController],
-  providers: [AppService, MinimarketService, ProductService],
+  providers: [AppService, ProductService],
 })
 export class AppModule {}

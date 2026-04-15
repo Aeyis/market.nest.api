@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Post, Query} from '@nestjs/common';
 import { ProductDto, ProductListingDto } from '../../dto/product.dto';
-import { CreateProductDto } from '../../dto/product.form.dto';
+import {CreateProductDto, ProductListingQueryDto} from '../../dto/product.form.dto';
 import {
     productCreateDtoToEntity,
     productEntityToDetailsDto,
@@ -13,10 +13,22 @@ export class ProductController {
     constructor(private readonly _productService: ProductService) {}
 
     @Get()
-    async getAll(): Promise<{ data: ProductListingDto[]; total: number }> {
-        const result = await this._productService.getAll();
+    async getAll(
+        @Query() query: ProductListingQueryDto,
+    ): Promise<{ data: ProductListingDto[]; total: number }> {
+        const result = await this._productService.getAll(query);
         const dto = result.data.map(productEntityToListingDto);
-        return { data: dto, total: result.total };
+        return {
+            data:dto,
+            total: result.total,
+        }
+    }
+
+    @Get(":id")
+    async getById(@Param('id', ParseIntPipe) id: number): Promise<{ data: ProductDto}> {
+        const product = await this._productService.getById(id);
+        const dto= productEntityToListingDto(product);
+        return { data:dto};
     }
 
     @Post()
