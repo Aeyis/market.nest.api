@@ -7,14 +7,14 @@ import { ProductEntity } from './entities/product.entity';
 import { CategoryEntity } from './entities/category.entity';
 import { UserEntity } from './entities/user.entity';
 import { CategoryController } from './controllers/category/category.controller';
-import { AuthController } from './controllers/auth.controller';
 import { CategoryService } from './services/category/category.service';
 import { ProductService } from './services/product/product.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { LoginMiddleware } from './middlewares/login.middleware';
-import { AuthMiddleware } from './middlewares/auth.middleware';
+import { AuthMiddleware } from './middlewares/auth/auth.middleware';
 import { UserService } from './services/user/user.service';
+import { AuthController } from './controllers/auth/auth.controller';
 
 @Module({
   imports: [

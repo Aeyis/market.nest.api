@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { UserService } from '../services/user/user.service';
-import { LoginFormDto, RegisterFormDto } from '../dto/auth.form.dto';
-import { registerFormDtoToUserEntity } from '../mappers/auth.mapper';
+import { UserService } from '../../services/user/user.service';
+import { LoginFormDto, RegisterFormDto } from '../../dto/auth.form.dto';
+import { registerFormDtoToUserEntity } from '../../mappers/auth.mapper';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('auth')
@@ -29,6 +29,6 @@ export class AuthController {
       id: user.id,
       role: user.role,
     });
-    return { token: token };
+    return { token };
   }
 }
