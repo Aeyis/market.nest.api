@@ -36,7 +36,11 @@ export class UserService {
     if (!bcrypt.compareSync(credential.password, user.password)) {
       throw new Error('Credential Invalid');
     }
-
+    return user;
+  }
+  async getById(id: number): Promise<UserEntity> {
+    const user = await this._userRepo.findOne({ where: { id } });
+    if (!user) throw new Error('User not found');
     return user;
   }
 }

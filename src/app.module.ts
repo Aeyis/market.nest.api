@@ -15,6 +15,7 @@ import { LoginMiddleware } from './middlewares/login.middleware';
 import { AuthMiddleware } from './middlewares/auth/auth.middleware';
 import { UserService } from './services/user/user.service';
 import { AuthController } from './controllers/auth/auth.controller';
+import { UserController } from './controllers/user/user.controller';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthController } from './controllers/auth/auth.controller';
     ProductController,
     CategoryController,
     AuthController,
+    UserController,
   ],
   providers: [AppService, CategoryService, ProductService, UserService],
 })
