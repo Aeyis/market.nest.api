@@ -1,7 +1,9 @@
 import { RegisterFormDto } from '../dto/auth.form.dto';
 import { UserEntity } from '../entities/user.entity';
 
-export function registerFormDtoToUserEntity(dto: RegisterFormDto): UserEntity {
+export function registerFormDtoToUserEntity(
+  dto: RegisterFormDto,
+): Omit<UserEntity, 'id' | 'role'> {
   const user = new UserEntity();
 
   user.username = dto.username;

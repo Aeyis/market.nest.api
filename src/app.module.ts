@@ -10,11 +10,11 @@ import { CategoryController } from './controllers/category/category.controller';
 import { AuthController } from './controllers/auth.controller';
 import { CategoryService } from './services/category/category.service';
 import { ProductService } from './services/product/product.service';
-import { UserService } from './services/user.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { LoginMiddleware } from './middlewares/login.middleware';
 import { AuthMiddleware } from './middlewares/auth.middleware';
+import { UserService } from './services/user/user.service';
 
 @Module({
   imports: [

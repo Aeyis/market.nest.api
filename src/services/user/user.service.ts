@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../../entities/user.entity';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
-import { LoginFormDto } from '../dto/auth.form.dto';
+import { LoginFormDto } from '../../dto/auth.form.dto';
 
 @Injectable()
 export class UserService {
@@ -12,14 +12,15 @@ export class UserService {
     private readonly _userRepo: Repository<UserEntity>,
   ) {}
 
-  async create(user: Omit<UserEntity, 'id'>): Promise<UserEntity> {
+  async register(user: Omit<UserEntity, 'id' | 'role'>): Promise<UserEntity> {
+    //vérifie Email
     const existing = await this._userRepo.findOne({
       where: { username: user.username },
     });
     if (existing) {
       throw new Error('User already exists');
     }
-
+    //Encryption du password
     user.password = bcrypt.hashSync(user.password, 10);
 
     return await this._userRepo.save(user);
