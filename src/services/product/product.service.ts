@@ -89,5 +89,11 @@ export class ProductService {
     await this._productRepo.delete(id);
   }
   //Update le produit
-  
+  async update(
+    id: number,
+    product: Partial<ProductEntity>,
+  ): Promise<ProductEntity> {
+    await this._productRepo.update(id, product);
+    return this.getById(id);
+  }
 }

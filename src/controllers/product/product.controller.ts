@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, } from '@nestjs/common';
 import { ProductDto, ProductListingDto } from '../../dto/product.dto';
-import { CreateProductDto, ProductListingQueryDto, } from '../../dto/product.form.dto';
+import { CreateProductDto, ProductListingQueryDto, UpdateProductDto, } from '../../dto/product.form.dto';
 import {
   productCreateDtoToEntity,
   productEntityToDetailsDto,
   productEntityToListingDto,
+  productUpdateDtoToEntity,
 } from '../../mappers/product.mapper';
 import { ProductService } from '../../services/product/product.service';
 import { UserRole } from '../../enums/user-role.enum';
@@ -55,5 +56,14 @@ export class ProductController {
 
   @RequireRole(UserRole.Admin, UserRole.Manager)
   @Put(':id')
-
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateProductDto,
+  ): Promise<{ data: ProductDto }> {
+    const updated = await this._productService.update(
+      id,
+      productUpdateDtoToEntity(body),
+    );
+    return { data: productEntityToDetailsDto(updated) };
+  }
 }
