@@ -5,31 +5,31 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
-    constructor(
-        @InjectRepository(CategoryEntity)
-        private readonly _categoryRepo: Repository<CategoryEntity>,
-    ) {}
+  constructor(
+    @InjectRepository(CategoryEntity)
+    private readonly _categoryRepo: Repository<CategoryEntity>,
+  ) {}
 
-    async create(category: Partial<CategoryEntity>) {
-        // vérifier si le "name" n'existe pas déjà
-        const existingName = await this._categoryRepo.findOne({
-            where: { name: category.name },
-        });
+  async create(category: Partial<CategoryEntity>) {
+    // vérifier si le "name" n'existe pas déjà
+    const existingName = await this._categoryRepo.findOne({
+      where: { name: category.name },
+    });
 
-        if (existingName) {
-            throw new Error('Category name already exists');
-        }
-
-        const newC = await this._categoryRepo.save(category);
-        return newC;
+    if (existingName) {
+      throw new Error('Category name already exists');
     }
 
-    async getAll(): Promise<{ data: CategoryEntity[]; total: number }> {
-        const result = await this._categoryRepo.findAndCount();
+    const newC = await this._categoryRepo.save(category);
+    return newC;
+  }
 
-        return {
-            data: result[0],
-            total: result[1],
-        };
-    }
+  async getAll(): Promise<{ data: CategoryEntity[]; total: number }> {
+    const result = await this._categoryRepo.findAndCount();
+
+    return {
+      data: result[0],
+      total: result[1],
+    };
+  }
 }

@@ -1,15 +1,14 @@
-import {IsNumber, IsOptional, IsString} from "class-validator";
-
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ProductQueryDTO {
-    @IsString()
-    @IsOptional()
-    name?: string;
-    @IsNumber()
-    @IsOptional()
-    limit: number = 20;
+  @IsString()
+  @IsOptional()
+  name?: string;
+  @IsNumber()
+  @IsOptional()
+  limit: number = 20;
 
-    @IsNumber()
-    @IsOptional()
-    offset: number=0;
+  @IsNumber()
+  @IsOptional()
+  offset: number = 0;
 }

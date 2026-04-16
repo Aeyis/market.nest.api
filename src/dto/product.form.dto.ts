@@ -1,4 +1,10 @@
-import {IsNumber, IsOptional, IsString, Min, MinLength} from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -34,7 +40,7 @@ export class UpdateProductDto {
 export class ProductQueryDto {
   @IsOptional()
   @IsString()
-  sort? : 'name' | 'price';
+  sort?: 'name' | 'price';
 }
 
 export class ProductListingQueryDto {

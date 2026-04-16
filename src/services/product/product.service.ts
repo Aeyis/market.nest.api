@@ -2,76 +2,78 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from '../../entities/category.entity';
 import { ProductEntity } from '../../entities/product.entity';
-import {FindOptionsWhere, ILike, In, Repository} from 'typeorm';
+import { FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 import { ProductListingQueryDto } from '../../dto/product.form.dto';
-import {ProductDto} from "../../dto/product.dto";
+import { ProductDto } from '../../dto/product.dto';
 
 @Injectable()
 export class ProductService {
-    constructor(
-        @InjectRepository(ProductEntity)
-        private readonly _productRepo: Repository<ProductEntity>,
-        @InjectRepository(CategoryEntity)
-        private readonly _categoryRepo: Repository<CategoryEntity>,
-    ) {}
+  constructor(
+    @InjectRepository(ProductEntity)
+    private readonly _productRepo: Repository<ProductEntity>,
+    @InjectRepository(CategoryEntity)
+    private readonly _categoryRepo: Repository<CategoryEntity>,
+  ) {}
 
-    async getById(id: number): Promise<ProductEntity> {
-        const product = await this._productRepo.findOne({
-            where: {
-                id: id,
-            },
-            relations : {
-                categories: true,
-            },
-        });
-        if (!product) {
-            throw new Error('Produit not found');
-        }
-        return product
+  async getById(id: number): Promise<ProductEntity> {
+    const product = await this._productRepo.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        categories: true,
+      },
+    });
+    if (!product) {
+      throw new Error('Produit not found');
+    }
+    return product;
+  }
+
+  async getAll(
+    query: ProductListingQueryDto,
+  ): Promise<{ data: ProductEntity[]; total: number }> {
+    const where: FindOptionsWhere<ProductEntity> = {};
+
+    if (query.name) {
+      where.name = ILike(`%${query.name}%`);
     }
 
-    async getAll(query: ProductListingQueryDto): Promise<{ data: ProductEntity[]; total: number }> {
-        const where: FindOptionsWhere<ProductEntity> = {};
+    const result = await this._productRepo.findAndCount({
+      where,
+      relations: { categories: true },
+      skip: query.offset,
+      take: query.limit,
+    });
 
-        if (query.name) {
-            where.name = ILike(`%${query.name}%`);
-        }
+    return {
+      data: result[0],
+      total: result[1],
+    };
+  }
 
-        const result = await this._productRepo.findAndCount({
-            where,
-            relations: {categories: true,},
-            skip: query.offset,
-            take: query.limit,
-        });
+  async create(
+    product: Partial<ProductEntity>,
+    categoriesIds: number[],
+  ): Promise<ProductEntity> {
+    // récupérer toutes les catégories
+    const categories = await this._categoryRepo.find({
+      where: {
+        id: In(categoriesIds),
+      },
+    });
 
-        return {
-            data: result[0],
-            total: result[1],
-        };
+    // vérifier que tous les ids existent
+    if (categories.length != categoriesIds.length) {
+      throw new Error('Une catégorie est invalide');
     }
 
-    async create(
-        product: Partial<ProductEntity>,
-        categoriesIds: number[],
-    ): Promise<ProductEntity> {
-        // récupérer toutes les catégories
-        const categories = await this._categoryRepo.find({
-            where: {
-                id: In(categoriesIds),
-            },
-        });
+    // on ajoute les catégories au product
+    product.categories = categories;
 
-        // vérifier que tous les ids existent
-        if (categories.length != categoriesIds.length) {
-            throw new Error('Une catégorie est invalide');
-        }
+    // save le product
+    const newP = await this._productRepo.save(product);
 
-        // on ajoute les catégories au product
-        product.categories = categories;
-
-        // save le product
-        const newP = await this._productRepo.save(product);
-
-        return newP;
-    }
+    return newP;
+  }
 }
