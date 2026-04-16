@@ -1,23 +1,14 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, } from '@nestjs/common';
 import { ProductDto, ProductListingDto } from '../../dto/product.dto';
-import {
-  CreateProductDto,
-  ProductListingQueryDto,
-} from '../../dto/product.form.dto';
+import { CreateProductDto, ProductListingQueryDto, } from '../../dto/product.form.dto';
 import {
   productCreateDtoToEntity,
   productEntityToDetailsDto,
   productEntityToListingDto,
 } from '../../mappers/product.mapper';
 import { ProductService } from '../../services/product/product.service';
+import { UserRole } from '../../enums/user-role.enum';
+import { RequireRole } from '../../guards/require-role/require-role.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -44,6 +35,7 @@ export class ProductController {
     return { data: dto };
   }
 
+  @RequireRole(UserRole.Admin)
   @Post()
   async create(@Body() body: CreateProductDto): Promise<{ data: ProductDto }> {
     const newEntity = await this._productService.create(
@@ -54,4 +46,14 @@ export class ProductController {
     const productDto = productEntityToDetailsDto(newEntity);
     return { data: productDto };
   }
+
+  @RequireRole(UserRole.Admin)
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this._productService.delete(id);
+  }
+
+  @RequireRole(UserRole.Admin, UserRole.Manager)
+  @Put(':id')
+
 }

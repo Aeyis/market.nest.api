@@ -76,4 +76,18 @@ export class ProductService {
 
     return newP;
   }
+  // delete le product
+  async delete(id: number): Promise<void> {
+    const product = await this._productRepo.findOne({
+      where: { id },
+      relations: { categories: true },
+    });
+    if (!product) throw new Error('Product not found');
+
+    product.categories = [];
+    await this._productRepo.save(product);
+    await this._productRepo.delete(id);
+  }
+  //Update le produit
+  
 }
